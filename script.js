@@ -1,9 +1,15 @@
-const bestScoreElement = document.getElementById('bestScore');
 const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
-const cyanElement = document.getElementById('cyan');
-const redElement = document.getElementById('red');
 const scoreElement = document.getElementById('score');
+const bestScoreElement = document.getElementById('bestScore');
+const secondBestScoreElement = document.getElementById('secondBestScore');
+const thirdBestScoreElement = document.getElementById('thirdBestScore');
+const cyanElement = document.getElementById('cyan');
+const cyanMinusButton = document.getElementById('cyanMinusButton');
+const cyanPlusButton = document.getElementById('cyanPlusButton');
+const redElement = document.getElementById('red');
+const redMinusButton = document.getElementById('redMinusButton');
+const redPlusButton = document.getElementById('redPlusButton');
 
 const colorChangeInterval = 30000;
 const gridSize = 30;
@@ -12,19 +18,23 @@ const gridCount = canvas.width / gridSize;
 let redValue = localStorage.getItem('redValue') || '154';
 let cyanValue = localStorage.getItem('cyanValue') || '140';
 let bestScore = localStorage.getItem('snakeBestScore') || 0;
+let secondBestScore = localStorage.getItem('snakeSecondBestScore') || 0;
+let thirdBestScore = localStorage.getItem('snakeThirdBestScore') || 0;
 let lastUpdateTime = 0;
 
 let direction;
 let food;
 let gameSpeed;
 let nextDirection;
-let score ;
+let score;
 let snake;
 let snakeIdleTime;
 
 redElement.value = redValue;
 cyanElement.value = cyanValue;
 bestScoreElement.textContent = bestScore;
+secondBestScoreElement.textContent = secondBestScore;
+thirdBestScoreElement.textContent = thirdBestScore;
 
 context.scale(1, 1);
 
@@ -90,12 +100,29 @@ function gameLoop(time) {
 }
 
 function gameOver() {
-    if (score > bestScore) {
-        bestScore = score;
-        localStorage.setItem('snakeBestScore', bestScore);
-        bestScoreElement.textContent = bestScore;
-    }
+    updateScores();
     newGame();
+}
+
+function updateScores() {
+    if (score > bestScore) {
+        thirdBestScore = secondBestScore;
+        secondBestScore = bestScore;
+        bestScore = score;
+    } else if (score > secondBestScore) {
+        thirdBestScore = secondBestScore;
+        secondBestScore = score;
+    } else if (score > thirdBestScore) {
+        thirdBestScore = score;
+    }
+
+    localStorage.setItem('snakeBestScore', bestScore);
+    localStorage.setItem('snakeSecondBestScore', secondBestScore);
+    localStorage.setItem('snakeThirdBestScore', thirdBestScore);
+
+    bestScoreElement.textContent = bestScore;
+    secondBestScoreElement.textContent = secondBestScore;
+    thirdBestScoreElement.textContent = thirdBestScore;
 }
 
 function getColors() {
@@ -157,14 +184,38 @@ document.addEventListener('keydown', event => {
     }
 });
 
+cyanElement.addEventListener('input', (event) => {
+    cyanValue = event.target.value;
+    localStorage.setItem('cyanValue', cyanValue)
+    event.target.blur();
+});
+
+cyanMinusButton.addEventListener('click', () => {
+    cyanElement.value = Math.max(0, Number(cyanElement.value) - 1);
+    cyanElement.dispatchEvent(new Event('input'));
+    event.target.blur();
+});
+
+cyanPlusButton.addEventListener('click', () => {
+    cyanElement.value = Math.min(255, Number(cyanElement.value) + 1);
+    cyanElement.dispatchEvent(new Event('input'));
+    event.target.blur();
+});
+
 redElement.addEventListener('input', (event) => {
     redValue = event.target.value;
     localStorage.setItem('redValue', redValue);
     event.target.blur();
 });
 
-cyanElement.addEventListener('input', (event) => {
-    cyanValue = event.target.value;
-    localStorage.setItem('cyanValue', cyanValue)
+redMinusButton.addEventListener('click', () => {
+    redElement.value = Math.max(0, Number(redElement.value) - 1);
+    redElement.dispatchEvent(new Event('input'));
+    event.target.blur();
+});
+
+redPlusButton.addEventListener('click', () => {
+    redElement.value = Math.min(255, Number(redElement.value) + 1);
+    redElement.dispatchEvent(new Event('input'));
     event.target.blur();
 });
