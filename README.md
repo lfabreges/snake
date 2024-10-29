@@ -1,4 +1,4 @@
-# Snake Anaglyphe
+# Snake stereo vision
 
 Inspiré par des techniques visuelles cliniques, ce jeu vise à apporter une expérience ludique pour le traitement de l’amblyopie fonctionnelle non strabique. Il est conçu pour renforcer la vision binoculaire via l’utilisation de lunettes anaglyphes (rouge et cyan). Dans ce jeu, le serpent et les éléments à collecter apparaissent en deux couleurs distinctes, visibles respectivement par chaque œil, stimulant ainsi la coopération visuelle entre les deux yeux.
 
